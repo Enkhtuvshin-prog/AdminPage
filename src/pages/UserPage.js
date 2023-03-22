@@ -74,7 +74,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
-  const [category, setCategory] = useState([]);
+  const [ filteredCategory, setFilteredCategory] = useState([]);
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -141,23 +141,51 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredCategory.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  // const filteredCategory = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  // const filteredCategory = applySortFilter(category, getComparator(order, orderBy), filterName);
 
-  const isNotFound = !filteredUsers.length && !!filterName;
+  const isNotFound = !filteredCategory.length && !!filterName;
 
-  // useEffect(async (req, res) => {
-  //   await axios
-  //     .get('http://localhost:8000/category')
+  const getCategory= async ()=>{
+    const res = await axios.get('http://localhost:8000/category')
+      try{
+        console.log(res.data.categories);
+        setFilteredCategory(res.data.categories);
+
+      }catch(err){
+        console.log("ERR", err);
+      }; 
+
+  }
+  useEffect( () => {
+    console.log("Ajlaj bna");
+    getCategory();
+  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get('http://localhost:8000/categories')
   //     .then((res) => {
-  //       console.log(res.data.categories);
+  //       console.log('CAT IRLEE', res.data.categories);
   //       setCategory(res.data.categories);
+  //       setFilteredCategory(res.data.categories);
   //     })
-  //     .catch(err);
-  //   console.log('first', err);
-  // });
+  //     .catch((err) => {
+  //       console.log('Err', err);
+  //     });
+  // }, []);
 
+//   const deleteCat = async() =>{
+//     const result = await axios.delete(`http://localhost:8000/category/:641b2a6be19ad26065f4565c`)
+//     try{
+//       console.log("delete",result);
+//       setFilteredCategory(result.data.categories);
+
+//     }catch(err){
+//       console.log("ERR", err);
+//     }; 
+// }
   return (
     <>
       <Helmet>
@@ -190,72 +218,74 @@ export default function UserPage() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
+                    {filteredCategory?.map((row) => {
+                      const { _id, title, description, categoryImg, categoryRating } = row;
 
-                    return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
+                      // selected={selectedUser}
+                      return (
+                        <TableRow hover key={_id} tabIndex={-1} role="checkbox">
+                          <TableCell padding="checkbox">
+                            <Checkbox checked={false} onChange={(event) => handleClick(event, title)} />
+                          </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Avatar alt={title} src={categoryImg} />
+                              <Typography variant="subtitle2" noWrap>
+                                {title}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+
+                          <TableCell align="left">{description}</TableCell>
+                          <Avatar alt={title} src={categoryImg} />
+                          {/* <TableCell align="left">{categoryRating}</TableCell> */}
+
+                          <TableCell align="left" color='#000' >
+                            {/* <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label> */}
+                            {categoryRating}
+                          </TableCell>
+
+                          <TableCell align="right">
+                            <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                              <Iconify icon={'eva:more-vertical-fill'} />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+
+                  {isNotFound && (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                          <Paper
+                            sx={{
+                              textAlign: 'center',
+                            }}
+                          >
+                            <Typography variant="h6" paragraph>
+                              Not found
                             </Typography>
-                          </Stack>
-                        </TableCell>
 
-                        <TableCell align="left">{company}</TableCell>
-
-                        <TableCell align="left">{role}</TableCell>
-
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
+                            <Typography variant="body2">
+                              No results found for &nbsp;
+                              <strong>&quot;{filterName}&quot;</strong>.
+                              <br /> Try checking for typos or using complete words.
+                            </Typography>
+                          </Paper>
                         </TableCell>
                       </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
+                    </TableBody>
+                
 
-                {isNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
-
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
+                
                 )}
               </Table>
             </TableContainer>
@@ -296,11 +326,15 @@ export default function UserPage() {
           Edit
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <Button sx={{ color: 'error.main' }} 
+        onClick={ deleteCat }
+         >
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
-        </MenuItem>
+        </Button>
       </Popover>
     </>
   );
 }
+
+
