@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
+import { filter, update } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -23,6 +23,7 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+
 // components
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -152,17 +153,29 @@ export default function UserPage() {
     const res = await axios.get('http://localhost:8000/category')
       try{
         console.log(res.data.categories);
-        setFilteredCategory(res.data.categories);
-
+        setFilteredCategory(res.data.categories);        
       }catch(err){
         console.log("ERR", err);
       }; 
 
   }
-  useEffect( () => {
-    console.log("Ajlaj bna");
-    getCategory();
-  }, []);
+   
+  const deleteCat = async(id) =>{
+    console.log("id==", id);
+    const result = await axios.delete(`http://localhost:8000/category/:${id}`)
+    try{
+      console.log("delete",result);
+      // setFilteredCategory(result.data.categories);
+      getCategory();
+    }catch(err){
+      console.log("ERR", err);
+    }; 
+}
+
+useEffect( () => {
+  console.log("Ajlaj bna");
+  getCategory();
+}, []);
   // useEffect(() => {
   //   axios
   //     .get('http://localhost:8000/categories')
@@ -175,17 +188,9 @@ export default function UserPage() {
   //       console.log('Err', err);
   //     });
   // }, []);
-
-//   const deleteCat = async() =>{
-//     const result = await axios.delete(`http://localhost:8000/category/:641b2a6be19ad26065f4565c`)
-//     try{
-//       console.log("delete",result);
-//       setFilteredCategory(result.data.categories);
-
-//     }catch(err){
-//       console.log("ERR", err);
-//     }; 
-// }
+  const updateCat = async () => {
+    
+  };
   return (
     <>
       <Helmet>
@@ -261,7 +266,7 @@ export default function UserPage() {
                     )}
                   </TableBody>
 
-                  {isNotFound && (
+                  {/* {isNotFound && (
                     <TableBody>
                       <TableRow>
                         <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -283,10 +288,7 @@ export default function UserPage() {
                         </TableCell>
                       </TableRow>
                     </TableBody>
-                
-
-                
-                )}
+                )} */}
               </Table>
             </TableContainer>
           </Scrollbar>
@@ -322,12 +324,14 @@ export default function UserPage() {
         }}
       >
         <MenuItem>
+          <Button onClick={()=> updateCat()}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
           Edit
+          </Button>
         </MenuItem>
 
-        <Button sx={{ color: 'error.main' }} 
-        onClick={ deleteCat }
+        <Button sx={{ color: 'error.main' }}  
+        onClick={deleteCat}
          >
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
