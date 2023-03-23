@@ -40,7 +40,7 @@ const TABLE_HEAD = [
   { id: 'description', label: 'Тайлбар', alignRight: false },
   { id: 'categoryIamge', label: 'Зураг', alignRight: false },
   { id: 'categoryRating', label: 'Үнэлгээ', alignRight: false },
-  { id: '' },
+  { id: 'actions', label: ' Үйлдлүүд', alignRight: true },
 ];
 
 // ----------------------------------------------------------------------
@@ -75,7 +75,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
-  const [ filteredCategory, setFilteredCategory] = useState([]);
+  const [filteredCategory, setFilteredCategory] = useState([]);
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -149,33 +149,30 @@ export default function UserPage() {
 
   const isNotFound = !filteredCategory.length && !!filterName;
 
-  const getCategory= async ()=>{
-    const res = await axios.get('http://localhost:8000/category')
-      try{
-        console.log(res.data.categories);
-        setFilteredCategory(res.data.categories);        
-      }catch(err){
-        console.log("ERR", err);
-      }; 
+  const getCategory = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/category');
+      console.log(res.data.categories);
+      setFilteredCategory(res.data.categories);
+    } catch (err) {
+      console.log('ERR', err);
+    }
+  };
 
-  }
-   
-  const deleteCat = async(id) =>{
-    console.log("id==", id);
-    const result = await axios.delete(`http://localhost:8000/category/:${id}`)
-    try{
-      console.log("delete",result);
-      // setFilteredCategory(result.data.categories);
+  const deleteCat = async (id) => {
+    // console.log('id==', id);
+    try {
+      const result = await axios.delete(`http://localhost:8000/category/${id}`);
       getCategory();
-    }catch(err){
-      console.log("ERR", err);
-    }; 
-}
+    } catch (err) {
+      console.log('ERR', err);
+    }
+  };
 
-useEffect( () => {
-  console.log("Ajlaj bna");
-  getCategory();
-}, []);
+  useEffect(() => {
+    console.log('Ajlaj bna');
+    getCategory();
+  }, []);
   // useEffect(() => {
   //   axios
   //     .get('http://localhost:8000/categories')
@@ -188,8 +185,14 @@ useEffect( () => {
   //       console.log('Err', err);
   //     });
   // }, []);
-  const updateCat = async () => {
-    
+  const updateCat = async (id) => {
+    console.log('id==', id);
+    try {
+      const result = await axios.put(`http://localhost:8000/category/${id}`);
+      getCategory();
+    } catch (err) {
+      console.log('ERR', err);
+    }
   };
   return (
     <>
@@ -223,50 +226,83 @@ useEffect( () => {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                    {filteredCategory?.map((row) => {
-                      const { _id, title, description, categoryImg, categoryRating } = row;
+                  {filteredCategory?.map((row) => {
+                    const { _id, title, description, categoryImg, categoryRating } = row;
 
-                      // selected={selectedUser}
-                      return (
-                        <TableRow hover key={_id} tabIndex={-1} role="checkbox">
-                          <TableCell padding="checkbox">
-                            <Checkbox checked={false} onChange={(event) => handleClick(event, title)} />
-                          </TableCell>
+                    // selected={selectedUser}
+                    return (
+                      <TableRow hover key={_id} tabIndex={-1} role="checkbox">
+                        <TableCell padding="checkbox">
+                          <Checkbox checked={false} onChange={(event) => handleClick(event, title)} />
+                        </TableCell>
 
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={title} src={categoryImg} />
-                              <Typography variant="subtitle2" noWrap>
-                                {title}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            <Avatar alt={title} src={categoryImg} />
+                            <Typography variant="subtitle2" noWrap>
+                              {title}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
 
-                          <TableCell align="left">{description}</TableCell>
-                          <Avatar alt={title} src={categoryImg} />
-                          {/* <TableCell align="left">{categoryRating}</TableCell> */}
+                        <TableCell align="left">{description}</TableCell>
+                        <Avatar alt={title} src={categoryImg} />
+                        {/* <TableCell align="left">{categoryRating}</TableCell> */}
 
-                          <TableCell align="left" color='#000' >
-                            {/* <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label> */}
-                            {categoryRating}
-                          </TableCell>
+                        <TableCell align="left" color="#000">
+                          {/* <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label> */}
+                          {categoryRating}
+                        </TableCell>
 
-                          <TableCell align="right">
-                            <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                              <Iconify icon={'eva:more-vertical-fill'} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                        <TableCell align="right">
+                          <IconButton size="large" color="inherit" onClick={updateCat}>
+                            <Iconify icon={'eva:edit-fill'} />
+                          </IconButton>
+                          <IconButton size="large" color="inherit" onClick={() => deleteCat(_id)}>
+                            <Iconify icon={'eva:trash-fill'} />
+                          </IconButton>
+                          {/* <Popover
+                            open={Boolean(open)}
+                            anchorEl={open}
+                            onClose={handleCloseMenu}
+                            anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                            PaperProps={{
+                              sx: {
+                                p: 1,
+                                width: 140,
+                                '& .MuiMenuItem-root': {
+                                  px: 1,
+                                  typography: 'body2',
+                                  borderRadius: 0.75,
+                                },
+                              },
+                            }}
+                          >
+                            <MenuItem>
+                              <Button onClick={() => updateCat()}>
+                                <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                                Edit
+                              </Button>
+                            </MenuItem>
+
+                            <Button sx={{ color: 'error.main' }} onClick={() => deleteCat(_id)}>
+                              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                              Delete
+                            </Button>
+                          </Popover> */}
+                        </TableCell>
                       </TableRow>
-                    )}
-                  </TableBody>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 53 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
 
-                  {/* {isNotFound && (
+                {/* {isNotFound && (
                     <TableBody>
                       <TableRow>
                         <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -304,41 +340,6 @@ useEffect( () => {
           />
         </Card>
       </Container>
-
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Button onClick={()=> updateCat()}>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-          </Button>
-        </MenuItem>
-
-        <Button sx={{ color: 'error.main' }}  
-        onClick={deleteCat}
-         >
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </Button>
-      </Popover>
     </>
   );
 }
-
-
