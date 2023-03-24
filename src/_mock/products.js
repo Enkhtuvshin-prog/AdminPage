@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
+import axios from 'axios';
 import { sample } from 'lodash';
+import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -29,13 +31,22 @@ const PRODUCT_NAME = [
   'Nike React Art3mis',
   'Nike React Infinity Run Flyknit A.I.R. Chaz Bear',
 ];
+
 const PRODUCT_COLOR = ['#00AB55', '#000000', '#FFFFFF', '#FFC0CB', '#FF4842', '#1890FF', '#94D82D', '#FFC107'];
 
 // ----------------------------------------------------------------------
 
 const products = [...Array(24)].map((_, index) => {
   const setIndex = index + 1;
-
+  // const [travel, setTravel] = useState([]);
+  // const allTravel = async () => {
+  //   try {
+  //     const res = await axios.get('http://localhost:8000/travel');
+  //     setTravel(res.data.travels);
+  //   } catch (err) {
+  //     console.log('ERROR==', err);
+  //   }
+  // };
   return {
     id: faker.datatype.uuid(),
     cover: `/assets/images/products/product_${setIndex}.jpg`,

@@ -77,7 +77,9 @@ function applySortFilter(array, comparator, query) {
 
 export default function UserPage() {
   const [filteredCategory, setFilteredCategory] = useState([]);
-  const [open, setOpen] = useState(null);
+  const [changeState, setChangeState] = useState(false);
+  const [category, setCategory] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const [page, setPage] = useState(0);
 
@@ -95,8 +97,8 @@ export default function UserPage() {
     setOpen(event.currentTarget);
   };
 
-  const handleCloseMenu = () => {
-    setOpen(null);
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleRequestSort = (event, property) => {
@@ -164,27 +166,26 @@ export default function UserPage() {
     // console.log('id==', id);
     try {
       const result = await axios.delete(`http://localhost:8000/category/${id}`);
-      getCategory();
+      setChangeState(!changeState);
     } catch (err) {
       console.log('ERR', err);
     }
   };
 
-  const updateCategory = async ( id) => {
-    console.log("====",  id);
-    try {
-      const res = await axios.post(`http://localhost:8000/category/${id}`);
-      getCategory()
-      // setMessage(res.data.message);
-    } catch (error) {
-      console.log("err", error);
-    }
-  };
+  // const updateCategory = async (id) => {
+  //   console.log('====', id);
+  //   try {
+  //     const res = await axios.put(`http://localhost:8000/category/${id}`);
+  //     setChangeState(!changeState);
+  //     // setMessage(res.data.message);
+  //   } catch (error) {
+  //     console.log('err', error);
+  //   }
+  // };
 
   useEffect(() => {
-    console.log('Ajlaj bna');
     getCategory();
-  }, []);
+  }, [changeState]);
   // useEffect(() => {
   //   axios
   //     .get('http://localhost:8000/categories')
@@ -197,20 +198,20 @@ export default function UserPage() {
   //       console.log('Err', err);
   //     });
   // }, []);
-  // const updateCat = async (id) => {
-  //   console.log('id==', id);
-  //   try {
-  //     const result = await axios.put(`http://localhost:8000/category/${id}`);
-  //     getCategory();
-  //   } catch (err) {
-  //     console.log('ERR', err);
-  //   }
-  // };
+
   return (
     <>
       <Helmet>
         <title> Azure category</title>
       </Helmet>
+
+      <BasicModal
+        open={open}
+        handleClose={handleClose}
+        category={category}
+        changeState={changeState}
+        setChangeState={setChangeState}
+      />
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -267,43 +268,20 @@ export default function UserPage() {
                         </TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit">
-                          <BasicModal/>
+                          <IconButton
+                            size="large"
+                            color="inherit"
+                            onClick={() => {
+                              setOpen(true);
+                              setCategory(row);
+                            }}
+                          >
+                            {/* <BasicModal icon={'eva:edit-fill'} id={_id} /> */}
                             <Iconify icon={'eva:edit-fill'} />
                           </IconButton>
                           <IconButton size="large" color="inherit" onClick={() => deleteCat(_id)}>
                             <Iconify icon={'eva:trash-fill'} />
                           </IconButton>
-                          {/* <Popover
-                            open={Boolean(open)}
-                            anchorEl={open}
-                            onClose={handleCloseMenu}
-                            anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                            PaperProps={{
-                              sx: {
-                                p: 1,
-                                width: 140,
-                                '& .MuiMenuItem-root': {
-                                  px: 1,
-                                  typography: 'body2',
-                                  borderRadius: 0.75,
-                                },
-                              },
-                            }}
-                          >
-                            <MenuItem>
-                              <Button onClick={() => updateCat()}>
-                                <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-                                Edit
-                              </Button>
-                            </MenuItem>
-
-                            <Button sx={{ color: 'error.main' }} onClick={() => deleteCat(_id)}>
-                              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-                              Delete
-                            </Button>
-                          </Popover> */}
                         </TableCell>
                       </TableRow>
                     );

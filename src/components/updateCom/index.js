@@ -1,51 +1,64 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import TextField from "@mui/material/TextField";
-import axios from "axios";
-import { useState } from "react";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import axios from 'axios';
+import { useState } from 'react';
+import Iconify from '../iconify';
 
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 500,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
   boxShadow: 24,
   p: 4,
 };
 
-export default function BasicModal({id, getCategory}) {
-  const [title, setTitle] = React.useState("");
-  const [img, setImage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = useState("error");
+export default function BasicModal({ open, handleClose, category, changeState, setChangeState }) {
+  const [title, setTitle] = React.useState({});
+  const [description, setDesc] = React.useState({});
+  const [categoryImg, setCategoryImg] = React.useState({});
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [categoryRating, setCategoryRating] = useState({});
+
   const changeTitle = (e) => {
     setTitle(e.target.value);
   };
-  const changeImage = (e) => {
-    setImage(e.target.value);
+  const changeDesc = (e) => {
+    setDesc(e.target.value);
   };
-  const updateCategory = async ( id) => {
-    console.log("====",  id);
+
+  const changeImage = (e) => {
+    setCategoryImg(e.target.value);
+  };
+  const changeRating = (e) => {
+    setCategoryRating(e.target.value);
+  };
+  const updateCategory = async () => {
+    console.log('===dv', category._id);
     try {
-      const res = await axios.post(`http://localhost:8000/category/${id}`);
-      getCategory()
+      const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
+        title,
+        description,
+        categoryImg,
+        categoryRating,
+      });
+      console.log(res.data.category);
+      setChangeState(!changeState);
       // setMessage(res.data.message);
     } catch (error) {
-      console.log("err", error);
+      console.log('err', error);
     }
+    handleClose();
   };
   return (
     <div>
-      <Button onClick={handleOpen}>add</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -54,36 +67,50 @@ export default function BasicModal({id, getCategory}) {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Update Category
+            {/* {isNew ? 'New' : 'Update'} Category */}
           </Typography>
           <Box
             component="form"
             sx={{
-              "& > :not(style)": { m: 1, width: "40ch" },
+              '& > :not(style)': { m: 1, width: '40ch' },
             }}
             noValidate
             autoComplete="off"
           >
             <TextField
               id="standard-basic"
-              label="Нэр"
+              label="Name"
               variant="standard"
+              aria-readonly="false"
               onChange={changeTitle}
+              // value={category.title}
             />
             <TextField
               id="standard-basic"
-              label="Тайлбар"
+              label="description"
               variant="standard"
-              onChange={changeTitle}
+              aria-readonly="false"
+              onChange={changeDesc}
+              // value={category.description}
             />
             <TextField
               id="standard-basic"
-              label="Зураг"
+              label=""
               variant="standard"
+              aria-readonly="false"
               onChange={changeImage}
+              // value={category.categoryImg}
+            />
+            <TextField
+              id="standard-basic"
+              label="Үнэлгээ"
+              variant="standard"
+              aria-readonly="false"
+              onChange={changeRating}
+              // value={category.categoryRating}
             />
           </Box>
-           <Button  onClick={updateCategory} >Update</Button> 
+          <Button onClick={updateCategory}>Save</Button>
         </Box>
       </Modal>
     </div>
