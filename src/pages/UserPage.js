@@ -28,6 +28,7 @@ import {
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
+import BasicModal from '../components/updateCom';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
@@ -169,6 +170,17 @@ export default function UserPage() {
     }
   };
 
+  const updateCategory = async ( id) => {
+    console.log("====",  id);
+    try {
+      const res = await axios.post(`http://localhost:8000/category/${id}`);
+      getCategory()
+      // setMessage(res.data.message);
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
+
   useEffect(() => {
     console.log('Ajlaj bna');
     getCategory();
@@ -185,15 +197,15 @@ export default function UserPage() {
   //       console.log('Err', err);
   //     });
   // }, []);
-  const updateCat = async (id) => {
-    console.log('id==', id);
-    try {
-      const result = await axios.put(`http://localhost:8000/category/${id}`);
-      getCategory();
-    } catch (err) {
-      console.log('ERR', err);
-    }
-  };
+  // const updateCat = async (id) => {
+  //   console.log('id==', id);
+  //   try {
+  //     const result = await axios.put(`http://localhost:8000/category/${id}`);
+  //     getCategory();
+  //   } catch (err) {
+  //     console.log('ERR', err);
+  //   }
+  // };
   return (
     <>
       <Helmet>
@@ -255,7 +267,8 @@ export default function UserPage() {
                         </TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={updateCat}>
+                          <IconButton size="large" color="inherit">
+                          <BasicModal/>
                             <Iconify icon={'eva:edit-fill'} />
                           </IconButton>
                           <IconButton size="large" color="inherit" onClick={() => deleteCat(_id)}>
