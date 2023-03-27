@@ -17,6 +17,8 @@ export default function ProductsPage() {
   const [openFilter, setOpenFilter] = useState(false);
   const [travel, setTravel] = useState([]);
   const [changeState, setChangeState] = useState(null);
+  // const [isNew, setIsNew]= useState(false)
+
   const handleOpenFilter = () => {
     setOpenFilter(true);
   };
@@ -30,8 +32,6 @@ export default function ProductsPage() {
       const res = await axios.get(`http://localhost:8000/travel`);
       console.log("=====", res.data.travel);
       setTravel(res.data.travel);
-
-
     }catch(err){
       console.log("ERROR", err);
     }
@@ -52,7 +52,7 @@ export default function ProductsPage() {
             Travel
           </Typography>
           <Button variant="contained" 
-          // onClick={()=>{setOpen(true); setIsNew(true); setEdit(false) }} 
+          // onClick={()=>{ setIsNew(true) }} 
           startIcon={<Iconify icon="eva:plus-fill"  />}  
            >
             New Travel
@@ -69,7 +69,7 @@ export default function ProductsPage() {
             <ProductSort />
           </Stack>
         </Stack>
-        <ProductList travels={travel} changeState={changeState} setChangeState={setChangeState} />
+        <ProductList travels={travel} changeState={changeState} setChangeState={setChangeState}  />
         {/* <ProductList products={PRODUCTS} /> */}
       </Container>
 

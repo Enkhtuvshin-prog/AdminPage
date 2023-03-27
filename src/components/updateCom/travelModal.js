@@ -20,64 +20,39 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, handleClose, category, changeState, setChangeState, isNew, edit }) {
-  const [title, setTitle] = useState();
-  const [description, setDesc] = React.useState();
-  const [categoryImg, setCategoryImg] = React.useState();
-  const [categoryRating, setCategoryRating] = useState();
+export default function BasicModal({ open, handleClose, travelOption, changeState, setChangeState,  setTravelOption }) {
+  
+  // const [category, setCategory] = useState();
 
-  const changeTitle = (e) => {
-    console.log('====', e.target.value);
-    setTitle(e.target.value);
-  };
-  const changeDesc = (e) => {
-    console.log('====', e.target.value);
-    setDesc(e.target.value);
-  };
 
-  const changeImage = (e) => {
-    console.log('====', e.target.value);
-    setCategoryImg(e.target.hhh);
-  };
-  const changeRating = (e) => {
-    console.log('====', e.target);
-    setCategoryRating(e.target.value);
-  };
 
   const saveTravel = async () => {
-    if (!edit) {
-      console.log('post===');
+   
+      // console.log('post===');
+      // try {
+      //   const res = await axios.put(`http://localhost:8000/travel/${travels._id}`, {travels});
+      //   console.log(res.data.travel);
+      //   setChangeState(!changeState);
+      //   // setMessage(res.data.message);
+      // } catch (error) {
+      //   console.log('err', error);
+      // }
+    
+    // } else {
+      console.log('put====', travelOption._id);
       try {
-        const res = await axios.post(`http://localhost:8000/travel`, {
-          title,
-          description,
-          categoryImg,
-          categoryRating,
-        });
+        const res = await axios.put(`http://localhost:8000/travel/${travelOption._id}`, travelOption);
         console.log(res.data.category);
         setChangeState(!changeState);
         // setMessage(res.data.message);
       } catch (error) {
         console.log('err', error);
       }
-    } else {
-      console.log('put====', category._id);
-      try {
-        const res = await axios.put(`http://localhost:8000/travel/`, {
-          title,
-          description,
-          categoryImg,
-          categoryRating,
-        });
-        console.log(res.data.category);
-        setChangeState(!changeState);
-        // setMessage(res.data.message);
-      } catch (error) {
-        console.log('err', error);
-      }
-    }
+    
     handleClose();
   };
+  // const {category} = travels
+  // console.log("====cat", category);
 
   return (
     <div>
@@ -89,7 +64,7 @@ export default function BasicModal({ open, handleClose, category, changeState, s
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            {isNew ? 'New' : 'Update'} Category
+            {/* {isNew ? 'New' : 'Update'} Category */}
             {/* New category */}
           </Typography>
 
@@ -101,34 +76,16 @@ export default function BasicModal({ open, handleClose, category, changeState, s
             noValidate
             autoComplete="off"
           >
-            <TextField
-              id="standard-basic"
-              label="Нэр"
-              variant="standard"
-              // onChange={changeTitle}
-            />
-            <TextField id="standard-basic" label="Тайлбар" variant="standard" onChange={changeDesc} />
-            <TextField id="standard-basic" label="Зураг" variant="standard" onChange={changeImage} />
-            <TextField id="standard-basic" label="Үнэ" variant="standard" onChange={changeRating} />
-            <TextField id="standard-basic" label="Байршил" variant="standard" onChange={changeRating} />
-            <TextField id="standard-basic" label="Өдөр" variant="standard" onChange={changeRating} />
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Age</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value="Age"
-                label="Age"
-                // onChange={handleChange}
-              >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField id="standard-basic" label="Категория" variant="standard" onChange={changeRating} />
-
-            {/* <Button onClick={createCategory}>Save</Button> */}
+            
+             <TextField id="standard-basic" label="Нэр" name='title' variant="standard" defaultValue={travelOption.title}  onChange={(e) => {
+              setTravelOption({ ...travelOption, [e.target.name]: e.target.value });
+            }} />
+            <TextField id="standard-basic" label="Зураг" name='images' variant="standard" defaultValue={travelOption.images} onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
+            <TextField id="standard-basic" label="Тайлбар" name='detail' variant="standard" defaultValue={travelOption.detail} onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
+            <TextField id="standard-basic" label="Үнэ"  name='price' variant="standard" defaultValue={travelOption.price} onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
+            <TextField id="standard-basic" label="Байршил" name='location' variant="standard"  defaultValue={travelOption.location}  onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })}/>
+            <TextField id="standard-basic" label="Өдөр" name='day' variant="standard" defaultValue={travelOption.day} onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })}  />
+            <TextField id="standard-basic" label="Категория" name='category' variant="standard"   onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
           </Box>
 
           <Button onClick={saveTravel}>Save</Button>

@@ -6,7 +6,6 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useState } from 'react';
-import Iconify from '../iconify';
 
 const style = {
   position: 'absolute',
@@ -20,40 +19,13 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, handleClose, category, changeState, setChangeState, isNew, edit }) {
-  const [title, setTitle] = useState();
-  const [description, setDesc] = React.useState();
-  const [categoryImg, setCategoryImg] = React.useState();
-  const [categoryRating, setCategoryRating] = useState();
-
-  const changeTitle = (e) => {
-    console.log('====', e.target.value);
-    setTitle(e.target.value);
-  };
-  const changeDesc = (e) => {
-    console.log('====', e.target.value);
-    setDesc(e.target.value);
-  };
-
-  const changeImage = (e) => {
-    console.log('====', e.target.value);
-    setCategoryImg(e.target.value);
-  };
-  const changeRating = (e) => {
-    console.log('====', e.target);
-    setCategoryRating(e.target.value);
-  };
-
+export default function BasicModal({ open, handleClose, category, setCategory, changeState, setChangeState, isNew, edit }) {
+console.log("bbbbcat", category);
   const saveCategory = async () => {
     if (!edit) {
       console.log('post===');
       try {
-        const res = await axios.post(`http://localhost:8000/category`, {
-          title,
-          description,
-          categoryImg,
-          categoryRating,
-        });
+        const res = await axios.post(`http://localhost:8000/category`, category);
         setChangeState(!changeState);
       } catch (error) {
         console.log('err', error);
@@ -61,12 +33,7 @@ export default function BasicModal({ open, handleClose, category, changeState, s
     } else {
       console.log('put====', category._id);
       try {
-        const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
-          title,
-          description,
-          categoryImg,
-          categoryRating,
-        });
+        const res = await axios.put(`http://localhost:8000/category/${category._id}`,  category);
         setChangeState(!changeState);
       } catch (error) {
         console.log('err', error);
@@ -101,12 +68,11 @@ export default function BasicModal({ open, handleClose, category, changeState, s
                 id="standard-basic"
                 label="Нэр"
                 variant="standard"
-                // onChange={changeTitle}
+                name='title'
               />
-              <TextField id="standard-basic" label="Тайлбар" variant="standard" onChange={changeDesc} />
-              <TextField id="standard-basic" label="Зураг" variant="standard" onChange={changeImage} />
-              <TextField id="standard-basic" label="Үнэлгээ" variant="standard" onChange={changeRating} />
-              {/* <Button onClick={createCategory}>Save</Button> */}
+              <TextField id="standard-basic" label="Тайлбар" name='desription'  variant="standard" />
+              <TextField id="standard-basic" label="Зураг" name='categoryImg' variant="standard"  />
+              <TextField id="standard-basic" label="Үнэлгээ" name='categoryRating' variant="standard"  />
             </Box>
           ) : (
             <Box
@@ -118,44 +84,39 @@ export default function BasicModal({ open, handleClose, category, changeState, s
               autoComplete="off"
             >
               <TextField
-                // value={title}
                 id="standard-basic"
                 label="Нэр"
                 variant="standard"
-                onChange={changeTitle}
-                // defaultValue={category.title}
-                // helperText="Incorrect entry."
+                name='title'
+                defaultValue={category.title}
+                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
               />
               <TextField
-                // value={description}
                 id="standard-basic"
                 label="Тайлбар"
                 variant="standard"
-                onChange={changeDesc}
-                // defaultValue={category.description}
-                // helperText="Incorrect entry."
+                name='description'
+                defaultValue={category.description}
+                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
+
               />
               <TextField
-                // value={categoryImg}
                 id="standard-basic"
                 label="Зураг"
                 variant="standard"
-                onChange={changeImage}
-                // defaultValue={category.categoryImg}
-                // helperText="Incorrect entry."
+                name='categoryImg'
+                defaultValue={category.categoryImg}
+                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
+
               />
               <TextField
-                // value={categoryRating}
                 id="standard-basic"
                 label="Үнэлгээ"
                 variant="standard"
-                onChange={changeRating}
-                // defaultValue={category.categoryRating}
+                name='categoryRating'
+                defaultValue={category.categoryRating}
+                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}/>
 
-                // defaultValue={category.categoryRating}
-                // helperText="Incorrect entry."
-              />
-              {/* <Button onClick={updateCategory}>Save</Button> */}
             </Box>
           )}
           <Button onClick={saveCategory}>Save</Button>

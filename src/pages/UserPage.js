@@ -78,7 +78,7 @@ function applySortFilter(array, comparator, query) {
 export default function UserPage() {
   const [filteredCategory, setFilteredCategory] = useState([]);
   const [changeState, setChangeState] = useState(false);
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState({});
   const [open, setOpen] = useState(false);
   const [isNew, setIsNew] = useState()
   const [page, setPage] = useState(0);
@@ -172,18 +172,7 @@ export default function UserPage() {
   useEffect(() => {
     getCategory();
   }, [changeState]);
-  // useEffect(() => {
-  //   axios
-  //     .get('http://localhost:8000/categories')
-  //     .then((res) => {
-  //       console.log('CAT IRLEE', res.data.categories);
-  //       setCategory(res.data.categories);
-  //       setFilteredCategory(res.data.categories);
-  //     })
-  //     .catch((err) => {
-  //       console.log('Err', err);
-  //     });
-  // }, []);
+  
 
   return (
     <>
@@ -195,6 +184,7 @@ export default function UserPage() {
         open={open}
         handleClose={handleClose}
         category={category}
+        setCategory={setCategory}
         changeState={changeState}
         setChangeState={setChangeState}
         isNew={isNew}

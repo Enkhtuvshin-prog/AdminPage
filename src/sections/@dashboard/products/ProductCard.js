@@ -34,7 +34,8 @@ export default function ShopProductCard({ travel, changeState, setChangeState })
   const { _id, title, images, detail, price, day, category } = travel;
   const [open, setOpen] = useState(null);
   const [isOpenOptions, setOpenOptions] = useState(false);
-  const [travels, setTravels] = useState({});
+  const [travelOption, setTravelOption] = useState({});
+
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -56,7 +57,7 @@ export default function ShopProductCard({ travel, changeState, setChangeState })
 
   return (
     <Card>
-      <TravelModal open={open} handleClose={handleCloseForm} travels={travels} />
+      <TravelModal open={open} handleClose={handleCloseForm} changeState={changeState} setChangeState={setChangeState} travelOption={travelOption}  setTravelOption={setTravelOption} />
 
       <Box>
         <Box sx={{ pt: '100%', position: 'relative' }}>
@@ -99,11 +100,16 @@ export default function ShopProductCard({ travel, changeState, setChangeState })
               anchorEl={open}
               onClose={handleCloseForm}
             >
+             <IconButton size="large" color="inherit" >
+                <Iconify icon={'eva:add-fill'} />
+              </IconButton>
+
               <IconButton
                 size="large"
                 color="inherit"
                 onClick={() => {
                   setOpen(true);
+                  setTravelOption(travel)
                 }}
               >
                 <Iconify icon={'eva:edit-fill'} />

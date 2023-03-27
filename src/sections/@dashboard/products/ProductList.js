@@ -9,12 +9,12 @@ ProductList.propTypes = {
   travels: PropTypes.array.isRequired,
 };
 
-export default function ProductList({ travels, changeState, setChangeState }) {
+export default function ProductList({ travels, changeState, setChangeState , isNew}) {
   return (
     <Grid container spacing={3} >
       {travels.map((travel) => (
         <Grid key={travel.id} item xs={12} sm={6} md={3}>
-          <ShopProductCard travel={travel} changeState={changeState} setChangeState={setChangeState} />
+          <ShopProductCard travel={travel} changeState={changeState} setChangeState={setChangeState}  />
         </Grid>
       ))}
     </Grid>

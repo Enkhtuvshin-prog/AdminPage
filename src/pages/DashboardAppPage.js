@@ -19,6 +19,7 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
+
 import { AuthContext } from '../context/AuthContext';
 
 // ----------------------------------------------------------------------
@@ -26,12 +27,12 @@ import { AuthContext } from '../context/AuthContext';
 export default function DashboardAppPage() {
   const theme = useTheme();
 
-  // const {user} = useContext(AuthContext);
-  const user = useContext(AuthContext);
-  
+  const { user } = useContext(AuthContext);
+
   if (!user) {
     return <Navigate to="/login" />;
   }
+
   return (
     <>
       <Helmet>
@@ -40,7 +41,7 @@ export default function DashboardAppPage() {
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome
+          Сайн уу байна уу? - Тавтай морил - {user.name}
         </Typography>
 
         <Grid container spacing={3}>
