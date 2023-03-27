@@ -27,90 +27,54 @@ export default function BasicModal({ open, handleClose, category, changeState, s
   const [categoryRating, setCategoryRating] = useState();
 
   const changeTitle = (e) => {
-    console.log("====", e.target.value);
+    console.log('====', e.target.value);
     setTitle(e.target.value);
   };
   const changeDesc = (e) => {
-    console.log("====", e.target.value);
+    console.log('====', e.target.value);
     setDesc(e.target.value);
   };
 
   const changeImage = (e) => {
-    console.log("====", e.target.value);
-    setCategoryImg(e.target.hhh);
+    console.log('====', e.target.value);
+    setCategoryImg(e.target.value);
   };
   const changeRating = (e) => {
-    console.log("====", e.target);
+    console.log('====', e.target);
     setCategoryRating(e.target.value);
   };
-  // const createCategory = async () => {
-  //   try {
-  //     const res = await axios.post(`http://localhost:8000/category`, {
-  //      title,
-  //       description,
-  //       categoryImg,
-  //       categoryRating,
-  //     });
-  //     console.log(res.data.category);
-  //     setChangeState(!changeState);
-  //     // setMessage(res.data.message);
-  //   } catch (error) {
-  //     console.log('err', error);
-  //   }
-  //   handleClose();
-  // };
-  // const updateCategory = async () => {
-  //   console.log('===dv', category._id);
-  //   try {
-  //     const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
-  //      title,
-  //       description,
-  //       categoryImg,
-  //       categoryRating,
-  //     });
-  //     console.log(res.data.category);
-  //     setChangeState(!changeState);
-  //     // setMessage(res.data.message);
-  //   } catch (error) {
-  //     console.log('err', error);
-  //   }
-  //   handleClose();
-  // };
-  const saveCategory= async()=>{
-    if(!edit){
-      console.log("post===");
+
+  const saveCategory = async () => {
+    if (!edit) {
+      console.log('post===');
       try {
-            const res = await axios.post(`http://localhost:8000/category`, { 
-             title ,
-              description,
-              categoryImg,
-              categoryRating,
-            });
-            console.log(res.data.category);
-            setChangeState(!changeState);
-            // setMessage(res.data.message);
-          } catch (error) {
-            console.log('err', error);
-          }
-    }else{
-      console.log("put====", category._id);
+        const res = await axios.post(`http://localhost:8000/category`, {
+          title,
+          description,
+          categoryImg,
+          categoryRating,
+        });
+        setChangeState(!changeState);
+      } catch (error) {
+        console.log('err', error);
+      }
+    } else {
+      console.log('put====', category._id);
       try {
-            const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
-             title,
-              description,
-              categoryImg,
-              categoryRating,
-            });
-            console.log(res.data.category);
-            setChangeState(!changeState);
-            // setMessage(res.data.message);
-          } catch (error) {
-            console.log('err', error);
-          }
-        }        
-        handleClose();
-  }
- 
+        const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
+          title,
+          description,
+          categoryImg,
+          categoryRating,
+        });
+        setChangeState(!changeState);
+      } catch (error) {
+        console.log('err', error);
+      }
+    }
+    handleClose();
+  };
+
   return (
     <div>
       <Modal
@@ -120,93 +84,82 @@ export default function BasicModal({ open, handleClose, category, changeState, s
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography id="modal-modal-title" variant="h6" component="h2">
             {isNew ? 'New' : 'Update'} Category
             {/* New category */}
           </Typography>
-        {isNew ?         
-          <Box
-            component="form"
-            sx={{
-              '& > :not(style)': { m: 1, width: '40ch' },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField
-              id="standard-basic"
-              label="Нэр"
-              variant="standard"
-              // onChange={changeTitle}
-            />
-            <TextField
-              id="standard-basic"
-              label="Тайлбар"
-              variant="standard"
-             onChange={changeDesc}
-            />
-            <TextField
-              id="standard-basic"
-              label="Зураг"
-              variant="standard"
-              onChange={changeImage}
-            />
-            <TextField
-              id="standard-basic"
-              label="Үнэлгээ"
-              variant="standard"
-              onChange={changeRating}
-            />
-                {/* <Button onClick={createCategory}>Save</Button> */}
+          {isNew ? (
+            <Box
+              component="form"
+              sx={{
+                '& > :not(style)': { m: 1, width: '40ch' },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="standard-basic"
+                label="Нэр"
+                variant="standard"
+                // onChange={changeTitle}
+              />
+              <TextField id="standard-basic" label="Тайлбар" variant="standard" onChange={changeDesc} />
+              <TextField id="standard-basic" label="Зураг" variant="standard" onChange={changeImage} />
+              <TextField id="standard-basic" label="Үнэлгээ" variant="standard" onChange={changeRating} />
+              {/* <Button onClick={createCategory}>Save</Button> */}
+            </Box>
+          ) : (
+            <Box
+              component="form"
+              sx={{
+                '& > :not(style)': { m: 1, width: '40ch' },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                // value={title}
+                id="standard-basic"
+                label="Нэр"
+                variant="standard"
+                onChange={changeTitle}
+                // defaultValue={category.title}
+                // helperText="Incorrect entry."
+              />
+              <TextField
+                // value={description}
+                id="standard-basic"
+                label="Тайлбар"
+                variant="standard"
+                onChange={changeDesc}
+                // defaultValue={category.description}
+                // helperText="Incorrect entry."
+              />
+              <TextField
+                // value={categoryImg}
+                id="standard-basic"
+                label="Зураг"
+                variant="standard"
+                onChange={changeImage}
+                // defaultValue={category.categoryImg}
+                // helperText="Incorrect entry."
+              />
+              <TextField
+                // value={categoryRating}
+                id="standard-basic"
+                label="Үнэлгээ"
+                variant="standard"
+                onChange={changeRating}
+                // defaultValue={category.categoryRating}
 
-          </Box>
-           :   
-          <Box
-            component="form"
-            sx={{
-              '& > :not(style)': { m: 1, width: '40ch' },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField
-              id="standard-basic"
-              label="Нэр"
-              variant="standard"
-              onChange={changeTitle}
-              // defaultValue={category.title}
-              // helperText="Incorrect entry."
-            />
-            <TextField
-              id="standard-basic"
-              label="Тайлбар"
-              variant="standard"
-              onChange={changeDesc}
-              // defaultValue={category.description}
-              // helperText="Incorrect entry."              
-            />
-            <TextField
-              id="standard-basic"
-              label="Зураг"
-              variant="standard"
-              onChange={changeImage}
-              // defaultValue={category.categoryImg}
-              // helperText="Incorrect entry."              
-            />
-            <TextField
-              id="standard-basic"
-              label="Үнэлгээ"
-              variant="standard"
-              onChange={changeRating}
-
-              // defaultValue={category.categoryRating}
-              // helperText="Incorrect entry."
-
-            />
-          {/* <Button onClick={updateCategory}>Save</Button> */}
-          </Box>}
+                // defaultValue={category.categoryRating}
+                // helperText="Incorrect entry."
+              />
+              {/* <Button onClick={updateCategory}>Save</Button> */}
+            </Box>
+          )}
           <Button onClick={saveCategory}>Save</Button>
-        </Box> 
+        </Box>
       </Modal>
     </div>
   );

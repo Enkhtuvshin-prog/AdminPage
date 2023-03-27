@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Box, FormControl,  InputLabel, Select, MenuItem} from '@mui/material';
+import { Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -27,29 +27,28 @@ export default function BasicModal({ open, handleClose, category, changeState, s
   const [categoryRating, setCategoryRating] = useState();
 
   const changeTitle = (e) => {
-    console.log("====", e.target.value);
+    console.log('====', e.target.value);
     setTitle(e.target.value);
   };
   const changeDesc = (e) => {
-    console.log("====", e.target.value);
+    console.log('====', e.target.value);
     setDesc(e.target.value);
   };
 
   const changeImage = (e) => {
-    console.log("====", e.target.value);
+    console.log('====', e.target.value);
     setCategoryImg(e.target.hhh);
   };
   const changeRating = (e) => {
-    console.log("====", e.target);
+    console.log('====', e.target);
     setCategoryRating(e.target.value);
   };
-  
 
-  const saveCategory = async () => {
+  const saveTravel = async () => {
     if (!edit) {
-      console.log("post===");
+      console.log('post===');
       try {
-        const res = await axios.post(`http://localhost:8000/category`, {
+        const res = await axios.post(`http://localhost:8000/travel`, {
           title,
           description,
           categoryImg,
@@ -62,9 +61,9 @@ export default function BasicModal({ open, handleClose, category, changeState, s
         console.log('err', error);
       }
     } else {
-      console.log("put====", category._id);
+      console.log('put====', category._id);
       try {
-        const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
+        const res = await axios.put(`http://localhost:8000/travel/`, {
           title,
           description,
           categoryImg,
@@ -78,7 +77,7 @@ export default function BasicModal({ open, handleClose, category, changeState, s
       }
     }
     handleClose();
-  }
+  };
 
   return (
     <div>
@@ -106,64 +105,33 @@ export default function BasicModal({ open, handleClose, category, changeState, s
               id="standard-basic"
               label="Нэр"
               variant="standard"
-            // onChange={changeTitle}
+              // onChange={changeTitle}
             />
-            <TextField
-              id="standard-basic"
-              label="Тайлбар"
-              variant="standard"
-              onChange={changeDesc}
-            />
-            <TextField
-              id="standard-basic"
-              label="Зураг"
-              variant="standard"
-              onChange={changeImage}
-            />
-            <TextField
-              id="standard-basic"
-              label="Үнэ"
-              variant="standard"
-              onChange={changeRating}
-            />
-            <TextField
-              id="standard-basic"
-              label="Байршил"
-              variant="standard"
-              onChange={changeRating}
-            />
-            <TextField
-              id="standard-basic"
-              label="Өдөр"
-              variant="standard"
-              onChange={changeRating}
-            />
+            <TextField id="standard-basic" label="Тайлбар" variant="standard" onChange={changeDesc} />
+            <TextField id="standard-basic" label="Зураг" variant="standard" onChange={changeImage} />
+            <TextField id="standard-basic" label="Үнэ" variant="standard" onChange={changeRating} />
+            <TextField id="standard-basic" label="Байршил" variant="standard" onChange={changeRating} />
+            <TextField id="standard-basic" label="Өдөр" variant="standard" onChange={changeRating} />
             <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value="Age"
-              label="Age"
-              // onChange={handleChange}
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
+              <InputLabel id="demo-simple-select-label">Age</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value="Age"
+                label="Age"
+                // onChange={handleChange}
+              >
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
             </FormControl>
-            <TextField
-              id="standard-basic"
-              label="Категория"
-              variant="standard"
-              onChange={changeRating}
-            />
+            <TextField id="standard-basic" label="Категория" variant="standard" onChange={changeRating} />
 
             {/* <Button onClick={createCategory}>Save</Button> */}
-
           </Box>
 
-          <Button onClick={saveCategory}>Save</Button>
+          <Button onClick={saveTravel}>Save</Button>
         </Box>
       </Modal>
     </div>
