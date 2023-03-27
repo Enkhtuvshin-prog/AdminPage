@@ -20,43 +20,97 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, handleClose, category, changeState, setChangeState }) {
-  const [title, setTitle] = React.useState({});
-  const [description, setDesc] = React.useState({});
-  const [categoryImg, setCategoryImg] = React.useState({});
-
-  const [categoryRating, setCategoryRating] = useState({});
+export default function BasicModal({ open, handleClose, category, changeState, setChangeState, isNew, edit }) {
+  const [title, setTitle] = useState();
+  const [description, setDesc] = React.useState();
+  const [categoryImg, setCategoryImg] = React.useState();
+  const [categoryRating, setCategoryRating] = useState();
 
   const changeTitle = (e) => {
+    console.log("====", e.target.value);
     setTitle(e.target.value);
   };
   const changeDesc = (e) => {
+    console.log("====", e.target.value);
     setDesc(e.target.value);
   };
 
   const changeImage = (e) => {
-    setCategoryImg(e.target.value);
+    console.log("====", e.target.value);
+    setCategoryImg(e.target.hhh);
   };
   const changeRating = (e) => {
+    console.log("====", e.target);
     setCategoryRating(e.target.value);
   };
-  const updateCategory = async () => {
-    console.log('===dv', category._id);
-    try {
-      const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
-        title,
-        description,
-        categoryImg,
-        categoryRating,
-      });
-      console.log(res.data.category);
-      setChangeState(!changeState);
-      // setMessage(res.data.message);
-    } catch (error) {
-      console.log('err', error);
-    }
-    handleClose();
-  };
+  // const createCategory = async () => {
+  //   try {
+  //     const res = await axios.post(`http://localhost:8000/category`, {
+  //      title,
+  //       description,
+  //       categoryImg,
+  //       categoryRating,
+  //     });
+  //     console.log(res.data.category);
+  //     setChangeState(!changeState);
+  //     // setMessage(res.data.message);
+  //   } catch (error) {
+  //     console.log('err', error);
+  //   }
+  //   handleClose();
+  // };
+  // const updateCategory = async () => {
+  //   console.log('===dv', category._id);
+  //   try {
+  //     const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
+  //      title,
+  //       description,
+  //       categoryImg,
+  //       categoryRating,
+  //     });
+  //     console.log(res.data.category);
+  //     setChangeState(!changeState);
+  //     // setMessage(res.data.message);
+  //   } catch (error) {
+  //     console.log('err', error);
+  //   }
+  //   handleClose();
+  // };
+  const saveCategory= async()=>{
+    if(!edit){
+      console.log("post===");
+      try {
+            const res = await axios.post(`http://localhost:8000/category`, { 
+             title ,
+              description,
+              categoryImg,
+              categoryRating,
+            });
+            console.log(res.data.category);
+            setChangeState(!changeState);
+            // setMessage(res.data.message);
+          } catch (error) {
+            console.log('err', error);
+          }
+    }else{
+      console.log("put====", category._id);
+      try {
+            const res = await axios.put(`http://localhost:8000/category/${category._id}`, {
+             title,
+              description,
+              categoryImg,
+              categoryRating,
+            });
+            console.log(res.data.category);
+            setChangeState(!changeState);
+            // setMessage(res.data.message);
+          } catch (error) {
+            console.log('err', error);
+          }
+        }        
+        handleClose();
+  }
+ 
   return (
     <div>
       <Modal
@@ -66,9 +120,11 @@ export default function BasicModal({ open, handleClose, category, changeState, s
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            {/* {isNew ? 'New' : 'Update'} Category */}
+        <Typography id="modal-modal-title" variant="h6" component="h2">
+            {isNew ? 'New' : 'Update'} Category
+            {/* New category */}
           </Typography>
+        {isNew ?         
           <Box
             component="form"
             sx={{
@@ -79,39 +135,78 @@ export default function BasicModal({ open, handleClose, category, changeState, s
           >
             <TextField
               id="standard-basic"
-              label="Name"
+              label="Нэр"
               variant="standard"
-              aria-readonly="false"
-              onChange={changeTitle}
-              // value={category.title}
+              // onChange={changeTitle}
             />
             <TextField
               id="standard-basic"
-              label="description"
+              label="Тайлбар"
               variant="standard"
-              aria-readonly="false"
-              onChange={changeDesc}
-              // value={category.description}
+             onChange={changeDesc}
             />
             <TextField
               id="standard-basic"
-              label=""
+              label="Зураг"
               variant="standard"
-              aria-readonly="false"
               onChange={changeImage}
-              // value={category.categoryImg}
             />
             <TextField
               id="standard-basic"
               label="Үнэлгээ"
               variant="standard"
-              aria-readonly="false"
               onChange={changeRating}
-              // value={category.categoryRating}
             />
+                {/* <Button onClick={createCategory}>Save</Button> */}
+
           </Box>
-          <Button onClick={updateCategory}>Save</Button>
-        </Box>
+           :   
+          <Box
+            component="form"
+            sx={{
+              '& > :not(style)': { m: 1, width: '40ch' },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField
+              id="standard-basic"
+              label="Нэр"
+              variant="standard"
+              onChange={changeTitle}
+              // defaultValue={category.title}
+              // helperText="Incorrect entry."
+            />
+            <TextField
+              id="standard-basic"
+              label="Тайлбар"
+              variant="standard"
+              onChange={changeDesc}
+              // defaultValue={category.description}
+              // helperText="Incorrect entry."              
+            />
+            <TextField
+              id="standard-basic"
+              label="Зураг"
+              variant="standard"
+              onChange={changeImage}
+              // defaultValue={category.categoryImg}
+              // helperText="Incorrect entry."              
+            />
+            <TextField
+              id="standard-basic"
+              label="Үнэлгээ"
+              variant="standard"
+              onChange={changeRating}
+
+              // defaultValue={category.categoryRating}
+              // helperText="Incorrect entry."
+
+            />
+          {/* <Button onClick={updateCategory}>Save</Button> */}
+          </Box>}
+          <Button onClick={saveCategory}>Save</Button>
+        </Box> 
       </Modal>
     </div>
   );

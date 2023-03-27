@@ -15,14 +15,25 @@ export default function LoginForm() {
   const { setUser } = useContext(AuthContext);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('saraa@gmail.com');
-  const [password, setPassword] = useState('apple123');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleClick = async () => {
+  
+  
+  const changeEmail = (e) => {
+    console.log("===", e.target.value);
+    setEmail(e.target.value);
+  };
+  const changePassword = (e) => {
+    console.log("pass===", e.target.value);
+    setPassword(e.target.value);
+  };
+
+  const handleClick = async (email, password) => {
     try {
       const result = await axios.post('http://localhost:8000/users/login', { email, password });
-      console.log('ppp==', result);
-      setUser(result.data.user[0]);
+      console.log('email==', result);
+      setUser(JSON.stringify(result.data.user[0]));
       navigate('/dashboard', { replace: true });
     } catch (err) {
       console.log(err);
@@ -32,12 +43,13 @@ export default function LoginForm() {
   return (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="email.com" value={email} />
+        <TextField name="email" label="email.com"  value={email}  onChange={changeEmail}/>
 
         <TextField
           name="password"
           label="password"
           value={password}
+          onChange={changePassword}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (

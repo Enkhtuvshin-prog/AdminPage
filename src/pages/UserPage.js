@@ -80,17 +80,14 @@ export default function UserPage() {
   const [changeState, setChangeState] = useState(false);
   const [category, setCategory] = useState(null);
   const [open, setOpen] = useState(false);
-
+  const [isNew, setIsNew] = useState()
   const [page, setPage] = useState(0);
+  const [edit, setEdit] = useState()
 
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleOpenMenu = (event) => {
@@ -172,17 +169,6 @@ export default function UserPage() {
     }
   };
 
-  // const updateCategory = async (id) => {
-  //   console.log('====', id);
-  //   try {
-  //     const res = await axios.put(`http://localhost:8000/category/${id}`);
-  //     setChangeState(!changeState);
-  //     // setMessage(res.data.message);
-  //   } catch (error) {
-  //     console.log('err', error);
-  //   }
-  // };
-
   useEffect(() => {
     getCategory();
   }, [changeState]);
@@ -211,6 +197,8 @@ export default function UserPage() {
         category={category}
         changeState={changeState}
         setChangeState={setChangeState}
+        isNew={isNew}
+        edit={edit}
       />
 
       <Container>
@@ -218,7 +206,9 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             Category
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" 
+          onClick={()=>{setOpen(true); setIsNew(true); setEdit(false) }} 
+          startIcon={<Iconify icon="eva:plus-fill"  />}   >
             New category
           </Button>
         </Stack>
@@ -274,9 +264,10 @@ export default function UserPage() {
                             onClick={() => {
                               setOpen(true);
                               setCategory(row);
+                              setIsNew(false)
+                              setEdit(true)
                             }}
                           >
-                            {/* <BasicModal icon={'eva:edit-fill'} id={_id} /> */}
                             <Iconify icon={'eva:edit-fill'} />
                           </IconButton>
                           <IconButton size="large" color="inherit" onClick={() => deleteCat(_id)}>
