@@ -17,7 +17,7 @@ export default function ProductsPage() {
   const [openFilter, setOpenFilter] = useState(false);
   const [travel, setTravel] = useState([]);
   const [changeState, setChangeState] = useState(null);
-  // const [isNew, setIsNew]= useState(false)
+  const [isEdit, setIsEdit] = useState(null);
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -52,7 +52,7 @@ export default function ProductsPage() {
             Travel
           </Typography>
           <Button variant="contained" 
-          // onClick={()=>{ setIsNew(true) }} 
+          onClick={()=> setIsEdit(false)} 
           startIcon={<Iconify icon="eva:plus-fill"  />}  
            >
             New Travel
@@ -69,7 +69,7 @@ export default function ProductsPage() {
             <ProductSort />
           </Stack>
         </Stack>
-        <ProductList travels={travel} changeState={changeState} setChangeState={setChangeState}  />
+        <ProductList travels={travel} changeState={changeState} setChangeState={setChangeState} isEdit={isEdit} setIsEdit={setIsEdit} />
         {/* <ProductList products={PRODUCTS} /> */}
       </Container>
 

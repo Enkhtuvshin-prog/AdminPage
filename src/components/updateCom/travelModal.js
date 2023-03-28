@@ -20,25 +20,20 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, handleClose, travelOption, changeState, setChangeState,  setTravelOption }) {
-  
-  // const [category, setCategory] = useState();
-
-
-
+export default function BasicModal({ open, handleClose, travelOption, changeState, setChangeState,  setTravelOption , isEdit }) {
   const saveTravel = async () => {
-   
-      // console.log('post===');
-      // try {
-      //   const res = await axios.put(`http://localhost:8000/travel/${travels._id}`, {travels});
-      //   console.log(res.data.travel);
-      //   setChangeState(!changeState);
-      //   // setMessage(res.data.message);
-      // } catch (error) {
-      //   console.log('err', error);
-      // }
+   if(!isEdit){
+      console.log('post===');
+      try {
+        const res = await axios.post(`http://localhost:8000/travel`, {travelOption});
+        console.log(res.data.travel);
+        setChangeState(!changeState);
+        // setMessage(res.data.message);
+      } catch (error) {
+        console.log('err', error);
+      }
     
-    // } else {
+    } else {
       console.log('put====', travelOption._id);
       try {
         const res = await axios.put(`http://localhost:8000/travel/${travelOption._id}`, travelOption);
@@ -48,12 +43,9 @@ export default function BasicModal({ open, handleClose, travelOption, changeStat
       } catch (error) {
         console.log('err', error);
       }
-    
+    }
     handleClose();
   };
-  // const {category} = travels
-  // console.log("====cat", category);
-
   return (
     <div>
       <Modal
@@ -62,13 +54,32 @@ export default function BasicModal({ open, handleClose, travelOption, changeStat
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            {/* {isNew ? 'New' : 'Update'} Category */}
-            {/* New category */}
+        <Box sx={style}>     
+        <Typography id="modal-modal-title" variant="h6" component="h2">
+            {!isEdit ? "New Travel" : "Update Travel" }
           </Typography>
-
-          <Box
+    
+        {
+              !isEdit ?   <Box
+              component="form"
+              sx={{
+                '& > :not(style)': { m: 1, width: '40ch' },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              
+              
+               <TextField id="standard-basic" label="Нэр" name='title' variant="standard"   onChange={(e) => {
+                setTravelOption({ ...travelOption, [e.target.name]: e.target.value });
+              }} />
+              <TextField id="standard-basic" label="Зураг" name='images' variant="standard"  onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
+              <TextField id="standard-basic" label="Тайлбар" name='detail' variant="standard" onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
+              <TextField id="standard-basic" label="Үнэ"  name='price' variant="standard"  onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
+              <TextField id="standard-basic" label="Байршил" name='location' variant="standard"    onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })}/>
+              <TextField id="standard-basic" label="Өдөр" name='day' variant="standard" onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })}  />
+              <TextField id="standard-basic" label="Категория" name='category' variant="standard"   onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
+            </Box> : <Box
             component="form"
             sx={{
               '& > :not(style)': { m: 1, width: '40ch' },
@@ -76,6 +87,7 @@ export default function BasicModal({ open, handleClose, travelOption, changeStat
             noValidate
             autoComplete="off"
           >
+            
             
              <TextField id="standard-basic" label="Нэр" name='title' variant="standard" defaultValue={travelOption.title}  onChange={(e) => {
               setTravelOption({ ...travelOption, [e.target.name]: e.target.value });
@@ -88,8 +100,9 @@ export default function BasicModal({ open, handleClose, travelOption, changeStat
             <TextField id="standard-basic" label="Категория" name='category' variant="standard"   onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
           </Box>
 
+      }
           <Button onClick={saveTravel}>Save</Button>
-        </Box>
+        </Box> 
       </Modal>
     </div>
   );

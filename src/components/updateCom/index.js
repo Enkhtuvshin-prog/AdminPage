@@ -69,10 +69,18 @@ console.log("bbbbcat", category);
                 label="Нэр"
                 variant="standard"
                 name='title'
+                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
+
               />
-              <TextField id="standard-basic" label="Тайлбар" name='desription'  variant="standard" />
-              <TextField id="standard-basic" label="Зураг" name='categoryImg' variant="standard"  />
-              <TextField id="standard-basic" label="Үнэлгээ" name='categoryRating' variant="standard"  />
+              <TextField id="standard-basic" label="Тайлбар" name='desription'  variant="standard"
+                              onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
+                              />
+              <TextField id="standard-basic" label="Зураг" name='categoryImg' variant="standard" 
+                              onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
+                              />
+              <TextField id="standard-basic" label="Үнэлгээ" name='categoryRating' variant="standard"
+                              onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
+                              />
             </Box>
           ) : (
             <Box

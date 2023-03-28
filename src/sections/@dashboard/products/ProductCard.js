@@ -30,12 +30,12 @@ ShopProductCard.propTypes = {
   product: PropTypes.object,
 };
 
-export default function ShopProductCard({ travel, changeState, setChangeState }) {
+export default function ShopProductCard({ travel, changeState, setChangeState, isEdit, setIsEdit }) {
   const { _id, title, images, detail, price, day, category } = travel;
   const [open, setOpen] = useState(null);
   const [isOpenOptions, setOpenOptions] = useState(false);
   const [travelOption, setTravelOption] = useState({});
-
+// const [isEdit, setIsEdit] = useState(false);
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -57,8 +57,7 @@ export default function ShopProductCard({ travel, changeState, setChangeState })
 
   return (
     <Card>
-      <TravelModal open={open} handleClose={handleCloseForm} changeState={changeState} setChangeState={setChangeState} travelOption={travelOption}  setTravelOption={setTravelOption} />
-
+      <TravelModal open={open} handleClose={handleCloseForm} changeState={changeState} setChangeState={setChangeState} travelOption={travelOption}  setTravelOption={setTravelOption} isEdit={isEdit}  />
       <Box>
         <Box sx={{ pt: '100%', position: 'relative' }}>
           <StyledProductImg alt={title} src={images} />
@@ -110,6 +109,7 @@ export default function ShopProductCard({ travel, changeState, setChangeState })
                 onClick={() => {
                   setOpen(true);
                   setTravelOption(travel)
+                  setIsEdit(true)
                 }}
               >
                 <Iconify icon={'eva:edit-fill'} />
