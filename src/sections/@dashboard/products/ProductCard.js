@@ -11,6 +11,7 @@ import { fCurrency } from '../../../utils/formatNumber';
 import Label from '../../../components/label';
 import Iconify from '../../../components/iconify';
 import TravelModal from '../../../components/updateCom/travelModal';
+import { CategoryContext } from '../../../context/categoryContext';
 
 import { ColorPreview } from '../../../components/color-utils';
 
@@ -30,18 +31,14 @@ ShopProductCard.propTypes = {
   product: PropTypes.object,
 };
 
-export default function ShopProductCard({ travel, changeState, setChangeState, isEdit, setIsEdit }) {
+export default function ShopProductCard({ travel, open, handleClose, handleOpen }) {
+  const { changeState, setChangeState, setIsEdit, setSelectTravel } = useContext(CategoryContext);
+
   const { _id, title, images, detail, price, day, category } = travel;
-  const [open, setOpen] = useState(null);
+
   const [isOpenOptions, setOpenOptions] = useState(false);
-  const [travelOption, setTravelOption] = useState({});
-// const [isEdit, setIsEdit] = useState(false);
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
 
   const handleCloseForm = () => {
-    setOpen(null);
     setOpenOptions(false);
   };
 
@@ -57,7 +54,7 @@ export default function ShopProductCard({ travel, changeState, setChangeState, i
 
   return (
     <Card>
-      <TravelModal open={open} handleClose={handleCloseForm} changeState={changeState} setChangeState={setChangeState} travelOption={travelOption}  setTravelOption={setTravelOption} isEdit={isEdit}  />
+      <TravelModal open={open} handleClose={handleClose} />
       <Box>
         <Box sx={{ pt: '100%', position: 'relative' }}>
           <StyledProductImg alt={title} src={images} />
@@ -89,27 +86,14 @@ export default function ShopProductCard({ travel, changeState, setChangeState, i
               &nbsp;
               {fCurrency(price)}
             </Typography>
-            <IconButton size="large" color="inherit" onClick={() => setOpenOptions(!isOpenOptions)}>
-              <Iconify icon={'eva:more-vertical-fill'} />
-            </IconButton>
-
-            <Popover
-              // style={{ positon: 'relative', top: 0 }}
-              open={isOpenOptions}
-              anchorEl={open}
-              onClose={handleCloseForm}
-            >
-             <IconButton size="large" color="inherit" >
-                <Iconify icon={'eva:add-fill'} />
-              </IconButton>
-
+            <Box>
               <IconButton
                 size="large"
                 color="inherit"
                 onClick={() => {
-                  setOpen(true);
-                  setTravelOption(travel)
-                  setIsEdit(true)
+                  handleOpen();
+                  setIsEdit(true);
+                  setSelectTravel(travel);
                 }}
               >
                 <Iconify icon={'eva:edit-fill'} />
@@ -117,7 +101,19 @@ export default function ShopProductCard({ travel, changeState, setChangeState, i
               <IconButton size="large" color="inherit" onClick={() => deleteTravel(_id)}>
                 <Iconify icon={'eva:trash-fill'} />
               </IconButton>
-            </Popover>
+            </Box>
+            {/* <IconButton size="large" color="inherit" onClick={() => setOpenOptions(!isOpenOptions)}>
+              <Iconify icon={'eva:more-vertical-fill'} />
+            </IconButton>
+
+            <Popover
+              // style={{ positon: 'relative', top: 0 }}
+              open={isOpenOptions}
+              anchorEl={open}
+              onClose={handleClose}
+            >
+              
+            </Popover> */}
           </Stack>
           {/* {isOpenOptions && (
             <>

@@ -1,8 +1,10 @@
+import { useEffect, useState, useContext } from 'react';
+
 import { Helmet } from 'react-helmet-async';
 import { filter, update } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+
 // @mui
 import {
   Card,
@@ -25,10 +27,11 @@ import {
 } from '@mui/material';
 
 // components
-import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 import BasicModal from '../components/updateCom';
+import { CategoryContext } from '../context/categoryContext';
+
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
@@ -76,13 +79,13 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
-  const [filteredCategory, setFilteredCategory] = useState([]);
-  const [changeState, setChangeState] = useState(false);
-  const [category, setCategory] = useState({});
+  const { filteredCategory, setFilteredCategory, setCategory, setIsEdit, changeState, setChangeState } =
+    useContext(CategoryContext);
+  // const [filteredCategory, setFilteredCategory] = useState([]);
+
   const [open, setOpen] = useState(false);
-  const [isNew, setIsNew] = useState()
+
   const [page, setPage] = useState(0);
-  const [edit, setEdit] = useState()
 
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -172,7 +175,6 @@ export default function UserPage() {
   useEffect(() => {
     getCategory();
   }, [changeState]);
-  
 
   return (
     <>
@@ -180,25 +182,21 @@ export default function UserPage() {
         <title> Azure category</title>
       </Helmet>
 
-      <BasicModal
-        open={open}
-        handleClose={handleClose}
-        category={category}
-        setCategory={setCategory}
-        changeState={changeState}
-        setChangeState={setChangeState}
-        isNew={isNew}
-        edit={edit}
-      />
+      <BasicModal open={open} handleClose={handleClose} />
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Category
           </Typography>
-          <Button variant="contained" 
-          onClick={()=>{setOpen(true); setIsNew(true); setEdit(false) }} 
-          startIcon={<Iconify icon="eva:plus-fill"  />}   >
+          <Button
+            variant="contained"
+            onClick={() => {
+              setOpen(true);
+              setIsEdit(false);
+            }}
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
             New category
           </Button>
         </Stack>
@@ -254,8 +252,8 @@ export default function UserPage() {
                             onClick={() => {
                               setOpen(true);
                               setCategory(row);
-                              setIsNew(false)
-                              setEdit(true)
+
+                              setIsEdit(true);
                             }}
                           >
                             <Iconify icon={'eva:edit-fill'} />

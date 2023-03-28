@@ -1,11 +1,13 @@
 import * as React from 'react';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { CategoryContext } from '../../context/categoryContext';
 
 const style = {
   position: 'absolute',
@@ -19,27 +21,28 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, handleClose, category, setCategory, changeState, setChangeState, isNew, edit }) {
-console.log("bbbbcat", category);
+export default function BasicModal({ open, handleClose }) {
+  const { category, setCategory, isEdit, changeState, setChangeState } = useContext(CategoryContext);
+  const [newCat, setNewCat] = useState({
+    title: '',
+    description: '',
+    categoryImg: 'url',
+    categoryRating: '',
+  });
+
   const saveCategory = async () => {
-    if (!edit) {
-      console.log('post===');
-      try {
-        const res = await axios.post(`http://localhost:8000/category`, category);
-        setChangeState(!changeState);
-      } catch (error) {
-        console.log('err', error);
+    try {
+      if (!isEdit) {
+        await axios.post(`http://localhost:8000/category`, newCat);
+      } else {
+        await axios.put(`http://localhost:8000/category/${category._id}`, category);
       }
-    } else {
-      console.log('put====', category._id);
-      try {
-        const res = await axios.put(`http://localhost:8000/category/${category._id}`,  category);
-        setChangeState(!changeState);
-      } catch (error) {
-        console.log('err', error);
-      }
+      setChangeState(!changeState);
+    } catch (error) {
+      console.log('err', error);
+    } finally {
+      handleClose();
     }
-    handleClose();
   };
 
   return (
@@ -52,81 +55,50 @@ console.log("bbbbcat", category);
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            {isNew ? 'New' : 'Update'} Category
+            {!isEdit ? 'New' : 'Update'} Category
             {/* New category */}
           </Typography>
-          {isNew ? (
-            <Box
-              component="form"
-              sx={{
-                '& > :not(style)': { m: 1, width: '40ch' },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                id="standard-basic"
-                label="Нэр"
-                variant="standard"
-                name='title'
-                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
-
-              />
-              <TextField id="standard-basic" label="Тайлбар" name='desription'  variant="standard"
-                              onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
-                              />
-              <TextField id="standard-basic" label="Зураг" name='categoryImg' variant="standard" 
-                              onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
-                              />
-              <TextField id="standard-basic" label="Үнэлгээ" name='categoryRating' variant="standard"
-                              onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
-                              />
-            </Box>
-          ) : (
-            <Box
-              component="form"
-              sx={{
-                '& > :not(style)': { m: 1, width: '40ch' },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                id="standard-basic"
-                label="Нэр"
-                variant="standard"
-                name='title'
-                defaultValue={category.title}
-                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
-              />
-              <TextField
-                id="standard-basic"
-                label="Тайлбар"
-                variant="standard"
-                name='description'
-                defaultValue={category.description}
-                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
-
-              />
-              <TextField
-                id="standard-basic"
-                label="Зураг"
-                variant="standard"
-                name='categoryImg'
-                defaultValue={category.categoryImg}
-                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}
-
-              />
-              <TextField
-                id="standard-basic"
-                label="Үнэлгээ"
-                variant="standard"
-                name='categoryRating'
-                defaultValue={category.categoryRating}
-                onChange={(e)=>setCategory({...category, [e.target.name]: e.target.value })}/>
-
-            </Box>
-          )}
+          <Box
+            component="form"
+            sx={{
+              '& > :not(style)': { m: 1, width: '40ch' },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField
+              id="standard-basic"
+              label="Нэр"
+              variant="standard"
+              name="title"
+              defauldValue={!isEdit ? newCat.title : category.title}
+              onChange={(e) => setCategory({ ...category, [e.target.name]: e.target.value })}
+            />
+            <TextField
+              id="standard-basic"
+              label="Тайлбар"
+              name="desription"
+              variant="standard"
+              defauldValue={!isEdit ? newCat.description : category.description}
+              onChange={(e) => setCategory({ ...category, [e.target.name]: e.target.value })}
+            />
+            <TextField
+              id="standard-basic"
+              label="Зураг"
+              name="categoryImg"
+              variant="standard"
+              defauldValue={!isEdit ? newCat.categoryImg : category.categoryImg}
+              onChange={(e) => setCategory({ ...category, [e.target.name]: e.target.value })}
+            />
+            <TextField
+              id="standard-basic"
+              label="Үнэлгээ"
+              name="categoryRating"
+              variant="standard"
+              defauldValue={!isEdit ? newCat.categoryRating : category.categoryRating}
+              onChange={(e) => setCategory({ ...category, [e.target.name]: e.target.value })}
+            />
+          </Box>
           <Button onClick={saveCategory}>Save</Button>
         </Box>
       </Modal>

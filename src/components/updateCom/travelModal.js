@@ -5,8 +5,9 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Iconify from '../iconify';
+import { CategoryContext } from '../../context/categoryContext';
 
 const style = {
   position: 'absolute',
@@ -20,29 +21,30 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, handleClose, travelOption, changeState, setChangeState,  setTravelOption , isEdit }) {
+export default function BasicModal({ open, handleClose }) {
+  const { selectTravel, setSelectTravel, changeState, setChangeState, isEdit, filteredCategory } =
+    useContext(CategoryContext);
+  // console.log('===filtCat', filteredCategory);
+  const [newTravel, setNewTravel] = useState({
+    title: '',
+    images: 'url',
+    detail: '',
+    price: '',
+    location: '',
+    day: '',
+    category: '',
+  });
   const saveTravel = async () => {
-   if(!isEdit){
-      console.log('post===');
-      try {
-        const res = await axios.post(`http://localhost:8000/travel`, {travelOption});
-        console.log(res.data.travel);
-        setChangeState(!changeState);
-        // setMessage(res.data.message);
-      } catch (error) {
-        console.log('err', error);
+    try {
+      if (!isEdit) {
+        const res = await axios.post(`http://localhost:8000/travel`, newTravel);
+        console.log('=-=-=-', res.data.travel);
+      } else {
+        const res = await axios.put(`http://localhost:8000/travel/${selectTravel._id}`, selectTravel);
       }
-    
-    } else {
-      console.log('put====', travelOption._id);
-      try {
-        const res = await axios.put(`http://localhost:8000/travel/${travelOption._id}`, travelOption);
-        console.log(res.data.category);
-        setChangeState(!changeState);
-        // setMessage(res.data.message);
-      } catch (error) {
-        console.log('err', error);
-      }
+      setChangeState(!changeState);
+    } catch (error) {
+      console.log('err', error);
     }
     handleClose();
   };
@@ -54,32 +56,11 @@ export default function BasicModal({ open, handleClose, travelOption, changeStat
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>     
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-            {!isEdit ? "New Travel" : "Update Travel" }
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {!isEdit ? 'New Travel' : 'Update Travel'}
           </Typography>
-    
-        {
-              !isEdit ?   <Box
-              component="form"
-              sx={{
-                '& > :not(style)': { m: 1, width: '40ch' },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              
-              
-               <TextField id="standard-basic" label="Нэр" name='title' variant="standard"   onChange={(e) => {
-                setTravelOption({ ...travelOption, [e.target.name]: e.target.value });
-              }} />
-              <TextField id="standard-basic" label="Зураг" name='images' variant="standard"  onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
-              <TextField id="standard-basic" label="Тайлбар" name='detail' variant="standard" onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
-              <TextField id="standard-basic" label="Үнэ"  name='price' variant="standard"  onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
-              <TextField id="standard-basic" label="Байршил" name='location' variant="standard"    onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })}/>
-              <TextField id="standard-basic" label="Өдөр" name='day' variant="standard" onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })}  />
-              <TextField id="standard-basic" label="Категория" name='category' variant="standard"   onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
-            </Box> : <Box
+          <Box
             component="form"
             sx={{
               '& > :not(style)': { m: 1, width: '40ch' },
@@ -87,22 +68,76 @@ export default function BasicModal({ open, handleClose, travelOption, changeStat
             noValidate
             autoComplete="off"
           >
-            
-            
-             <TextField id="standard-basic" label="Нэр" name='title' variant="standard" defaultValue={travelOption.title}  onChange={(e) => {
-              setTravelOption({ ...travelOption, [e.target.name]: e.target.value });
-            }} />
-            <TextField id="standard-basic" label="Зураг" name='images' variant="standard" defaultValue={travelOption.images} onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
-            <TextField id="standard-basic" label="Тайлбар" name='detail' variant="standard" defaultValue={travelOption.detail} onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
-            <TextField id="standard-basic" label="Үнэ"  name='price' variant="standard" defaultValue={travelOption.price} onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
-            <TextField id="standard-basic" label="Байршил" name='location' variant="standard"  defaultValue={travelOption.location}  onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })}/>
-            <TextField id="standard-basic" label="Өдөр" name='day' variant="standard" defaultValue={travelOption.day} onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })}  />
-            <TextField id="standard-basic" label="Категория" name='category' variant="standard"   onChange={(e)=>setTravelOption({...travelOption, [e.target.name]: e.target.value })} />
-          </Box>
+            <TextField
+              id="standard-basic"
+              label="Нэр"
+              name="title"
+              variant="standard"
+              value={!isEdit ? newTravel.title : selectTravel.title}
+              onChange={(e) => {
+                setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value });
+              }}
+            />
+            <TextField
+              id="standard-basic"
+              label="Зураг"
+              name="images"
+              variant="standard"
+              value={!isEdit ? newTravel.images : selectTravel.images}
+              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+            />
+            <TextField
+              id="standard-basic"
+              label="Тайлбар"
+              name="detail"
+              variant="standard"
+              value={!isEdit ? newTravel.detail : selectTravel.detail}
+              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+            />
+            <TextField
+              id="standard-basic"
+              label="Үнэ"
+              name="price"
+              variant="standard"
+              value={!isEdit ? newTravel.price : selectTravel.price}
+              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+            />
+            <TextField
+              id="standard-basic"
+              label="Байршил"
+              name="location"
+              variant="standard"
+              value={!isEdit ? newTravel.location : selectTravel.location}
+              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+            />
+            <TextField
+              id="standard-basic"
+              label="Өдөр"
+              name="day"
+              variant="standard"
+              value={!isEdit ? newTravel.day : selectTravel.day}
+              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+            />
 
-      }
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Категория</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                // value={age}
+                label="Категория"
+                name="category"
+                value={!isEdit ? newTravel.day : selectTravel.day}
+                onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+              >
+                {filteredCategory.map((item) => (
+                  <MenuItem value={item._id}>{item.title}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
           <Button onClick={saveTravel}>Save</Button>
-        </Box> 
+        </Box>
       </Modal>
     </div>
   );
