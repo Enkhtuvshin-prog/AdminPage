@@ -45,6 +45,14 @@ export default function BasicModal({ open, handleClose }) {
     }
   };
 
+  const handleChange = (e) => {
+    if (!isEdit) {
+      setNewCat({ ...newCat, [e.target.name]: e.target.value });
+    } else {
+      setCategory({ ...category, [e.target.name]: e.target.value });
+    }
+  };
+
   return (
     <div>
       <Modal
@@ -71,32 +79,32 @@ export default function BasicModal({ open, handleClose }) {
               label="Нэр"
               variant="standard"
               name="title"
-              defauldValue={!isEdit ? newCat.title : category.title}
-              onChange={(e) => setCategory({ ...category, [e.target.name]: e.target.value })}
+              value={!isEdit ? newCat.title : category.title}
+              onChange={handleChange}
             />
             <TextField
               id="standard-basic"
               label="Тайлбар"
               name="desription"
               variant="standard"
-              defauldValue={!isEdit ? newCat.description : category.description}
-              onChange={(e) => setCategory({ ...category, [e.target.name]: e.target.value })}
+              value={!isEdit ? newCat.description : category.description}
+              onChange={handleChange}
             />
             <TextField
               id="standard-basic"
               label="Зураг"
               name="categoryImg"
               variant="standard"
-              defauldValue={!isEdit ? newCat.categoryImg : category.categoryImg}
-              onChange={(e) => setCategory({ ...category, [e.target.name]: e.target.value })}
+              value={!isEdit ? newCat.categoryImg : category.categoryImg}
+              onChange={handleChange}
             />
             <TextField
               id="standard-basic"
               label="Үнэлгээ"
               name="categoryRating"
               variant="standard"
-              defauldValue={!isEdit ? newCat.categoryRating : category.categoryRating}
-              onChange={(e) => setCategory({ ...category, [e.target.name]: e.target.value })}
+              value={!isEdit ? newCat.categoryRating : category.categoryRating}
+              onChange={handleChange}
             />
           </Box>
           <Button onClick={saveCategory}>Save</Button>

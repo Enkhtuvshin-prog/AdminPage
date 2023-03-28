@@ -34,6 +34,15 @@ export default function BasicModal({ open, handleClose }) {
     day: '',
     category: '',
   });
+
+  const handleChange = (e) => {
+    if (!isEdit) {
+      setNewTravel({ ...selectTravel, [e.target.name]: e.target.value });
+    } else {
+      setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value });
+    }
+  };
+
   const saveTravel = async () => {
     try {
       if (!isEdit) {
@@ -73,50 +82,48 @@ export default function BasicModal({ open, handleClose }) {
               label="Нэр"
               name="title"
               variant="standard"
-              value={!isEdit ? newTravel.title : selectTravel.title}
-              onChange={(e) => {
-                setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value });
-              }}
+              defaultValue={!isEdit ? newTravel.title : selectTravel.title}
+              onChange={handleChange}
             />
             <TextField
               id="standard-basic"
               label="Зураг"
               name="images"
               variant="standard"
-              value={!isEdit ? newTravel.images : selectTravel.images}
-              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+              defaultValue={!isEdit ? newTravel.images : selectTravel.images}
+              onChange={handleChange}
             />
             <TextField
               id="standard-basic"
               label="Тайлбар"
               name="detail"
               variant="standard"
-              value={!isEdit ? newTravel.detail : selectTravel.detail}
-              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+              defaultValue={!isEdit ? newTravel.detail : selectTravel.detail}
+              onChange={handleChange}
             />
             <TextField
               id="standard-basic"
               label="Үнэ"
               name="price"
               variant="standard"
-              value={!isEdit ? newTravel.price : selectTravel.price}
-              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+              defaultValue={!isEdit ? newTravel.price : selectTravel.price}
+              onChange={handleChange}
             />
             <TextField
               id="standard-basic"
               label="Байршил"
               name="location"
               variant="standard"
-              value={!isEdit ? newTravel.location : selectTravel.location}
-              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+              defaultValue={!isEdit ? newTravel.location : selectTravel.location}
+              onChange={handleChange}
             />
             <TextField
               id="standard-basic"
               label="Өдөр"
               name="day"
               variant="standard"
-              value={!isEdit ? newTravel.day : selectTravel.day}
-              onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+              defaultValue={!isEdit ? newTravel.day : selectTravel.day}
+              onChange={handleChange}
             />
 
             <FormControl fullWidth>
@@ -127,8 +134,8 @@ export default function BasicModal({ open, handleClose }) {
                 // value={age}
                 label="Категория"
                 name="category"
-                value={!isEdit ? newTravel.day : selectTravel.day}
-                onChange={(e) => setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value })}
+                defaultValue={!isEdit ? newTravel.day : selectTravel.day}
+                onChange={handleChange}
               >
                 {filteredCategory.map((item) => (
                   <MenuItem value={item._id}>{item.title}</MenuItem>
