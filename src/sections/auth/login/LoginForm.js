@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 // @mui
-import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
+import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, Snackbar, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
@@ -18,15 +18,27 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('anu@gmail.com');
   const [password, setPassword] = useState('pass9988');
+  const [message, setMessage] = useState(false)
+  const [alert, setAlert] = useState(false)
+  const [status, setStatus] = useState(false)
 
   const handleClick = async () => {
     try {
       const result = await axios.post('http://localhost:8000/users/login', { email, password });
       console.log(result);
       setUser(result.data.user);
-      navigate('/dashboard', { replace: true });
+      setMessage(result.data.message)
+      setStatus("success");
+      setAlert(true);
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true })
+      }, "1000");
+      // navigate('/dashboard', { replace: true });
     } catch (error) {
       console.log(error);
+      setMessage(error.response.data.message);
+      setStatus("error");
+      setAlert(true);
     }
   };
 
@@ -62,6 +74,16 @@ export default function LoginForm() {
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
         Нэвтрэх
       </LoadingButton>
+      <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={alert}
+          onClose={() => {
+            setAlert(false);
+          }}
+          autoHideDuration={3000}
+        >
+          <Alert severity={status}>{message}</Alert>
+        </Snackbar>
     </>
   );
 }
