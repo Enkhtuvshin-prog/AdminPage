@@ -23,6 +23,7 @@ const style = {
 
 export default function BasicModal({ open, handleClose }) {
   const { category, setCategory, isEdit, changeState, setChangeState } = useContext(CategoryContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [newCat, setNewCat] = useState({
     title: '',
     description: '',
@@ -31,33 +32,38 @@ export default function BasicModal({ open, handleClose }) {
   });
 
   const saveCategory = async () => {
-    try {
-      if (!isEdit) {
-        await axios.post(`http://localhost:8000/category`, newCat);
-      } else {
-        await axios.put(`http://localhost:8000/category/${category._id}`, category);
+    if (!isLoading) {
+      try {
+        if (!isEdit) {
+          await axios.post(`http://localhost:8000/category`, newCat);
+        } else {
+          await axios.put(`http://localhost:8000/category/${category._id}`, category);
+        }
+        setChangeState(!changeState);
+      } catch (error) {
+        console.log('err', error);
+      } finally {
+        handleClose();
       }
-      setChangeState(!changeState);
-    } catch (error) {
-      console.log('err', error);
-    } finally {
-      handleClose();
     }
   };
-  const getImgUrl = async(e)=>{
-    try{
+  const getImgUrl = async (e) => {
+    try {
+      setIsLoading(true);
       const bodyData = new FormData();
-      bodyData.append("image", e.target.files[0]);
+      bodyData.append('image', e.target.files[0]);
       const res = await axios.post(`http://localhost:8000/upload`, bodyData);
-      console.log("===", res.data.imgUrl);
-  
-      if(!isEdit){
-        setNewCat({...newCat, categoryImg: res.data.imgUrl })
-      }else{
-        setNewCat({...category, categoryImg: res.data.imgUrl })
+      console.log('===', res.data.imgUrl);
+
+      if (!isEdit) {
+        setNewCat({ ...newCat, categoryImg: res.data.imgUrl });
+      } else {
+        setCategory({ ...category, categoryImg: res.data.imgUrl });
       }
-    }catch(err){
-      console.log("ERROR", err);
+    } catch (err) {
+      console.log('ERROR', err);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleChange = (e) => {
@@ -67,7 +73,6 @@ export default function BasicModal({ open, handleClose }) {
       setCategory({ ...category, [e.target.name]: e.target.value });
     }
   };
-
 
   return (
     <div>

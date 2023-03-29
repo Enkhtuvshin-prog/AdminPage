@@ -46,15 +46,16 @@ export default function BasicModal({ open, handleClose }) {
   const saveTravel = async () => {
     try {
       if (!isEdit) {
-         await axios.post(`http://localhost:8000/travel`, newTravel);
+        await axios.post(`http://localhost:8000/travel`, newTravel);
       } else {
-         await axios.put(`http://localhost:8000/travel/${selectTravel._id}`, selectTravel);
+        await axios.put(`http://localhost:8000/travel/${selectTravel._id}`, selectTravel);
       }
       setChangeState(!changeState);
     } catch (error) {
       console.log('err', error);
+    } finally {
+      handleClose();
     }
-    handleClose();
   };
   return (
     <div>

@@ -18,26 +18,26 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('anu@gmail.com');
   const [password, setPassword] = useState('pass9988');
-  const [message, setMessage] = useState(false)
-  const [alert, setAlert] = useState(false)
-  const [status, setStatus] = useState(false)
+  const [message, setMessage] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const [status, setStatus] = useState(false);
 
   const handleClick = async () => {
     try {
       const result = await axios.post('http://localhost:8000/users/login', { email, password });
       console.log(result);
       setUser(result.data.user);
-      setMessage(result.data.message)
-      setStatus("success");
+      setMessage(result.data.message);
+      setStatus('success');
       setAlert(true);
       setTimeout(() => {
-        navigate('/dashboard', { replace: true })
-      }, "1000");
+        navigate('/dashboard', { replace: true });
+      }, '1000');
       // navigate('/dashboard', { replace: true });
     } catch (error) {
       console.log(error);
       setMessage(error.response.data.message);
-      setStatus("error");
+      setStatus('error');
       setAlert(true);
     }
   };
@@ -75,15 +75,15 @@ export default function LoginForm() {
         Нэвтрэх
       </LoadingButton>
       <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={alert}
-          onClose={() => {
-            setAlert(false);
-          }}
-          autoHideDuration={3000}
-        >
-          <Alert severity={status}>{message}</Alert>
-        </Snackbar>
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={alert}
+        onClose={() => {
+          setAlert(false);
+        }}
+        autoHideDuration={3000}
+      >
+        <Alert severity={status}>{message}</Alert>
+      </Snackbar>
     </>
   );
 }
