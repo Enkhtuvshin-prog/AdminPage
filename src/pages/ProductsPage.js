@@ -2,9 +2,10 @@ import { Helmet } from 'react-helmet-async';
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 // @mui
-import { Button, Container, IconButton, Stack, Typography } from '@mui/material';
+import { Button, Container, IconButton, Stack, Typography, Grid } from '@mui/material';
 // components
-import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
+import { ProductSort, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
+import ShopProductCard from "../sections/@dashboard/products/ProductCard"
 import Iconify from '../components/iconify';
 import { CategoryContext } from '../context/categoryContext';
 
@@ -14,11 +15,8 @@ import PRODUCTS from '../_mock/products';
 // ----------------------------------------------------------------------
 
 export default function ProductsPage() {
-  const { setTravels, changeState, setChangeState, setIsEdit } = useContext(CategoryContext);
+  const { travels, setTravels, changeState,  setIsEdit} = useContext(CategoryContext);
   const [openFilter, setOpenFilter] = useState(false);
-  // const [travel, setTravel] = useState([]);
-  // const [changeState, setChangeState] = useState(null);
-  // const [isEdit, setIsEdit] = useState(null);
 
   const [open, setOpen] = useState(false);
 
@@ -26,9 +24,9 @@ export default function ProductsPage() {
     setOpenFilter(true);
   };
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
+  // const handleOpen = () => {
+  //   setOpen(true);
+  // };
 
   const handleClose = () => {
     setOpen(false);
@@ -66,7 +64,7 @@ export default function ProductsPage() {
             variant="contained"
             onClick={() => {
               setIsEdit(false);
-              handleOpen();
+              setOpen(true)
             }}
             startIcon={<Iconify icon="eva:plus-fill" />}
           >
@@ -84,17 +82,10 @@ export default function ProductsPage() {
             <ProductSort />
           </Stack>
         </Stack>
-        <ProductList
-          // travels={travels}
-          // changeState={changeState}
-          // setChangeState={setChangeState}
-          // isEdit={isEdit}
-          // setIsEdit={setIsEdit}
-          open={open}
-          handleClose={handleClose}
-          handleOpen={handleOpen}
-        />
-        {/* <ProductList products={PRODUCTS} /> */}
+       
+          <ShopProductCard  travels={travels}  open={open} handleClose={handleClose} setOpen={setOpen}
+          />
+       
       </Container>
     </>
   );

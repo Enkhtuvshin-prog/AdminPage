@@ -10,15 +10,14 @@ const CategoryProvider = ({ children }) => {
   const [changeState, setChangeState] = useState(false);
   const [travels, setTravels] = useState([]);
   const [selectTravel, setSelectTravel] = useState({});
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   return (
     <CategoryContext.Provider
       value={{
         filteredCategory,
         setFilteredCategory,
-        open,
-        setOpen,
+        
         category,
         setCategory,
         isEdit,

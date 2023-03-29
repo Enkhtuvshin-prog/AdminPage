@@ -26,7 +26,7 @@ export default function BasicModal({ open, handleClose }) {
   const [newCat, setNewCat] = useState({
     title: '',
     description: '',
-    categoryImg: 'url',
+    categoryImg: '',
     categoryRating: '',
   });
 
@@ -44,7 +44,22 @@ export default function BasicModal({ open, handleClose }) {
       handleClose();
     }
   };
-
+  const getImgUrl = async(e)=>{
+    try{
+      const bodyData = new FormData();
+      bodyData.append("image", e.target.files[0]);
+      const res = await axios.post(`http://localhost:8000/upload`, bodyData);
+      console.log("===", res.data.imgUrl);
+  
+      if(!isEdit){
+        setNewCat({...newCat, categoryImg: res.data.imgUrl })
+      }else{
+        setNewCat({...category, categoryImg: res.data.imgUrl })
+      }
+    }catch(err){
+      console.log("ERROR", err);
+    }
+  };
   const handleChange = (e) => {
     if (!isEdit) {
       setNewCat({ ...newCat, [e.target.name]: e.target.value });
@@ -52,6 +67,7 @@ export default function BasicModal({ open, handleClose }) {
       setCategory({ ...category, [e.target.name]: e.target.value });
     }
   };
+
 
   return (
     <div>
@@ -72,7 +88,7 @@ export default function BasicModal({ open, handleClose }) {
               '& > :not(style)': { m: 1, width: '40ch' },
             }}
             noValidate
-            autoComplete="off"
+            // autoComplete="off"
           >
             <TextField
               id="standard-basic"
@@ -84,19 +100,20 @@ export default function BasicModal({ open, handleClose }) {
             />
             <TextField
               id="standard-basic"
-              label="Тайлбар"
-              name="desription"
+              label="Description"
               variant="standard"
+              name="description"
               value={!isEdit ? newCat.description : category.description}
               onChange={handleChange}
             />
             <TextField
               id="standard-basic"
+              type="file"
               label="Зураг"
               name="categoryImg"
               variant="standard"
               value={!isEdit ? newCat.categoryImg : category.categoryImg}
-              onChange={handleChange}
+              onChange={getImgUrl}
             />
             <TextField
               id="standard-basic"

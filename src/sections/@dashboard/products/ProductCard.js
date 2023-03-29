@@ -1,19 +1,16 @@
-import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import axios from 'axios';
 
 // @mui
-import { Box, Card, Link, Typography, Stack, IconButton, Popover } from '@mui/material';
+import { Grid,  Box, Card, Link, Typography, Stack, IconButton, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 // components
-import Label from '../../../components/label';
 import Iconify from '../../../components/iconify';
 import TravelModal from '../../../components/updateCom/travelModal';
 import { CategoryContext } from '../../../context/categoryContext';
 
-import { ColorPreview } from '../../../components/color-utils';
 
 // ----------------------------------------------------------------------
 
@@ -27,20 +24,9 @@ const StyledProductImg = styled('img')({
 
 // ----------------------------------------------------------------------
 
-ShopProductCard.propTypes = {
-  product: PropTypes.object,
-};
-
-export default function ShopProductCard({ travel, open, handleClose, handleOpen }) {
+export default function ShopProductCard({ travels,  open, setOpen, handleClose,  }) {
   const { changeState, setChangeState, setIsEdit, setSelectTravel } = useContext(CategoryContext);
 
-  const { _id, title, images, detail, price, day, category } = travel;
-
-  const [isOpenOptions, setOpenOptions] = useState(false);
-
-  const handleCloseForm = () => {
-    setOpenOptions(false);
-  };
 
   const deleteTravel = async (id) => {
     try {
@@ -53,22 +39,29 @@ export default function ShopProductCard({ travel, open, handleClose, handleOpen 
   };
 
   return (
-    <Card>
-      <TravelModal open={open} handleClose={handleClose} />
+    <>
+     <TravelModal 
+      open={open} handleClose={handleClose}
+      />
+    <Grid container spacing={3}>
+      {travels.map((travel) => (
+        <Grid key={travel.id} item xs={12} sm={6} md={3}>
+          <Card>
+     
       <Box>
         <Box sx={{ pt: '100%', position: 'relative' }}>
-          <StyledProductImg alt={title} src={images} />
+          <StyledProductImg alt={travel.title} src={travel.images} />
         </Box>
 
         <Stack spacing={2} sx={{ p: 3 }}>
           <Box>
             <Link color="inherit" underline="hover">
               <Typography variant="h4" noWrap>
-                {title}
+                {travel.title}
               </Typography>
             </Link>
-            <Typography>{detail}</Typography>
-            <Typography>Day: {day}</Typography>
+            <Typography>{travel.detail}</Typography>
+            <Typography>Day: {travel.day}</Typography>
           </Box>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             {/* <ColorPreview colors={colors} /> */}
@@ -84,49 +77,38 @@ export default function ShopProductCard({ travel, open, handleClose, handleOpen 
                 {/* {priceSale && fCurrency(priceSale)} */}
               </Typography>
               &nbsp;
-              {fCurrency(price)}
+              {fCurrency(travel.price)}
             </Typography>
             <Box>
               <IconButton
                 size="large"
                 color="inherit"
                 onClick={() => {
-                  handleOpen();
+                  setOpen(true)
                   setIsEdit(true);
                   setSelectTravel(travel);
                 }}
               >
                 <Iconify icon={'eva:edit-fill'} />
               </IconButton>
-              <IconButton size="large" color="inherit" onClick={() => deleteTravel(_id)}>
+              <IconButton size="large" color="inherit" onClick={() => deleteTravel(travel._id)}>
                 <Iconify icon={'eva:trash-fill'} />
               </IconButton>
             </Box>
-            {/* <IconButton size="large" color="inherit" onClick={() => setOpenOptions(!isOpenOptions)}>
-              <Iconify icon={'eva:more-vertical-fill'} />
-            </IconButton>
-
-            <Popover
-              // style={{ positon: 'relative', top: 0 }}
-              open={isOpenOptions}
-              anchorEl={open}
-              onClose={handleClose}
-            >
-              
-            </Popover> */}
+            
           </Stack>
-          {/* {isOpenOptions && (
-            <>
-              <IconButton size="large" color="inherit" onClick={() => setOpen(true)}>
-                <Iconify icon={'eva:edit-fill'} />
-              </IconButton>
-              <IconButton size="large" color="inherit" onClick={() => deleteTravel(_id)}>
-                <Iconify icon={'eva:trash-fill'} />
-              </IconButton>
-            </>
-          )} */}
+        
         </Stack>
+        
       </Box>
     </Card>
+
+          
+        </Grid>
+      ))}
+    </Grid>
+    
+    
+    </>
   );
 }

@@ -37,7 +37,7 @@ export default function BasicModal({ open, handleClose }) {
 
   const handleChange = (e) => {
     if (!isEdit) {
-      setNewTravel({ ...selectTravel, [e.target.name]: e.target.value });
+      setNewTravel({ ...newTravel, [e.target.name]: e.target.value });
     } else {
       setSelectTravel({ ...selectTravel, [e.target.name]: e.target.value });
     }
@@ -46,10 +46,9 @@ export default function BasicModal({ open, handleClose }) {
   const saveTravel = async () => {
     try {
       if (!isEdit) {
-        const res = await axios.post(`http://localhost:8000/travel`, newTravel);
-        console.log('=-=-=-', res.data.travel);
+         await axios.post(`http://localhost:8000/travel`, newTravel);
       } else {
-        const res = await axios.put(`http://localhost:8000/travel/${selectTravel._id}`, selectTravel);
+         await axios.put(`http://localhost:8000/travel/${selectTravel._id}`, selectTravel);
       }
       setChangeState(!changeState);
     } catch (error) {

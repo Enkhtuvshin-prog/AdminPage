@@ -11,13 +11,14 @@ ProductList.propTypes = {
   travels: PropTypes.array.isRequired,
 };
 
-export default function ProductList({ open, handleClose, handleOpen }) {
+export default function ProductList() {
   const { travels } = useContext(CategoryContext);
   return (
     <Grid container spacing={3}>
       {travels.map((travel) => (
         <Grid key={travel.id} item xs={12} sm={6} md={3}>
-          <ShopProductCard travel={travel} open={open} handleClose={handleClose} handleOpen={handleOpen} />
+          <ShopProductCard  travel={travel}  
+          />
         </Grid>
       ))}
     </Grid>
